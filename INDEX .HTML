@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="description"
+    content="Compare military strength of all countries with army size, tanks, nuclear power and more.">
+  <meta name="keywords" content="army, military, country comparison, defense power, force nation, military strength">
+  <meta name="author" content="Your Name or Brand">
+  <meta charset="UTF-8" />
+  <title>Force Nation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Hand+Pre:wght@400..700&display=swap" rel="stylesheet"><style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Caveat', cursive;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #2f4f4f, #1e3c3c);
+      background-size: 400% 400%;
+      animation: backgroundShift 15s ease infinite;
+      overflow-y: auto;
+      color: white;
+      transition: background 1s ease;
+    }
+
+    .rank {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 30px;
+      color: gold;
+      /* Default to gold */
+    }
+
+    .rank.silver {
+      color: silver;
+    }
+
+    .rank.bronze {
+      color: #cd7f32;
+    }
+
+    @keyframes backgroundShift {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    #intro {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: black;
+      z-index: 9999;
+      position: fixed;
+      width: 100%;
+      animation: fadeOut 1s ease 4.5s forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    .letter {
+      font-size: 60px;
+      margin: 0 5px;
+      opacity: 0;
+      animation: popIn 0.5s ease forwards;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .container {
+      display: none;
+      max-width: 600px;
+      margin: 120px auto;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 1s ease 5s forwards;
+    }
+
+    input[type="text"] {
+      width: 90%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-top: 15px;
+      background-color: #333;
+      color: #fff;
+    }
+
+    .autocomplete {
+      position: relative;
+      width: 90%;
+      margin: 10px auto;
+      background-color: #222;
+      border-radius: 8px;
+      z-index: 10;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .autocomplete div {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #444;
+    }
+
+    .autocomplete div:hover {
+      background-color: #444;
+    }
+
+    .flag-wrapper {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .flag {
+      width: 100px;
+      display: none;
+      border: 3px solid #fff;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .flag:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.4);
+    }
+
+    #flagInstruction {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #ccc;
+    }
+
+    .details {
+      margin-top: 20px;
+      text-align: left;
+      padding: 15px;
+      background-color: #111;
+      border-radius: 10px;
+      display: none;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .details p {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="intro">
+    <div id="title">
+      <span class="letter" style="animation-delay: 0s">F</span>
+      <span class="letter" style="animation-delay: 0.2s">O</span>
+      <span class="letter" style="animation-delay: 0.4s">R</span>
+      <span class="letter" style="animation-delay: 0.6s">C</span>
+      <span class="letter" style="animation-delay: 0.8s">E</span>
+      <span class="letter" style="animation-delay: 1s">&nbsp;</span>
+      <span class="letter" style="animation-delay: 1.2s">N</span>
+      <span class="letter" style="animation-delay: 1.4s">A</span>
+      <span class="letter" style="animation-delay: 1.6s">T</span>
+      <span class="letter" style="animation-delay: 1.8s">I</span>
+      <span class="letter" style="animation-delay: 2s">O</span>
+      <span class="letter" style="animation-delay: 2.2s">N</span>
+    </div>
+  </div>
+
+  <div class="container" id="mainApp">
+    <h1>🌍 CHECK YOUR COUNTRY ARMY</h1>
+    <input type="text" id="searchInput" placeholder="Type country name...">
+    <div class="autocomplete" id="autocompleteBox"></div>
+
+    <div class="flag-wrapper">
+      <img id="flagImg" class="flag" src="" alt="Country Flag">
+      <p id="flagInstruction">👉 Click on this flag to see your country's information</p>
+    </div>
+
+
+    <div class="details" id="countryDetails"></div>
+  </div>
+
+  <script>
+    const countryColors = {
+      "Norway": "#BA0C2F",
+      "Sweden": "#005CBF",
+      "Vietnam": "#DA251D",
+      "Spain": "#AA151B",
+      "Poland": "#DC143C",
+      "UAE": "#00732F",
+      "Iraq": "#CE1126",
+      "Nigeria": "#008751",
+      "Thailand": "#2D2A4A",
+      "Greece": "#0D5EAF",
+      "India": "#1a1a40",
+      "Pakistan": "#004225",
+      "China": "#EDBE00",
+      "United States": "#1222e8",
+      "turkey": "#E30B17",
+      "United Kingdom": "#00247D",
+      "France": "#0055A4",
+      "Germany": "#000000",
+      "Israel": "#0066B3",
+      "Japan": "#BC002D",
+      "North Korea": "#E50000",
+      "South Korea": "#003478",
+      "Iran": "#008C45",
+      "Brazil": "#00A859",
+      "Italy": "#009639",
+      "Saudi Arabia": "#006C35",
+      "Egypt": "#E30B17",
+      "Australia": "#006747",
+      "Ukraine": "#005BBB",
+      "Russia": "#D52B1E",
+      "Canada": "#FF0000",
+      "Mexico": "#006747",
+      "Indonesia": "#D80000",
+      "Argentina": "#74ACDF",
+      "South Africa": "#006847",
+      "Bangladesh": "#006A4E",
+      "Nepal": "#DC143C",
+      "Sri Lanka": "#8D153A",
+      "Morocco": "#C1272D",
+      "Ethiopia": "#078930",
+      "Philippines": "#0038A8",
+      "Malaysia": "#010066",
+      "Colombia": "#FCD116",
+    };
+
+    const armyData = {
+      "India": {
+        army: "1,450,000 Active Personnel",
+        tanks: "4730",
+        flag: "https://flagcdn.com/w80/in.png",
+        guns: "9000",
+        aeroplanes: "2100",
+        missiles: "5000",
+        nuclear: "180 warheads",
+        warships: "150"
+      },
+      "Pakistan": {
+        army: "654,000 Active Personnel",
+        flag: "https://flagcdn.com/w80/pk.png",
+        tanks: "2600",
+        guns: "4500",
+        aeroplanes: "1300",
+        missiles: "2000",
+        nuclear: "170 warheads",
+        warships: "20"
+      },
+      "United States": {
+
+        army: "1.1 million Active Personnel",
+        flag: "https://flagcdn.com/w80/us.png",
+        tanks: "4,640",
+        guns: "398.5 million",
+        missiles: "5,000+",
+        nuclear: "5,800 warheads",
+        warships: "490+",
+      },
+      "China": {
+        army: "2,035,000 Active Personnel",
+        tanks: "9,150",
+        flag: "https://flagcdn.com/w80/cn.png",
+        guns: "50,000+",
+        aeroplanes: "3,000+",
+        missiles: "1,500+",
+        nuclear: "320 warheads",
+        warships: "300+"
+      },
+      "Turkey": {
+        army: "425,000 Active Personnel",
+        tanks: "2,622",
+        flag: "https://flagcdn.com/w80/tr.png",
+        guns: "7,500+",
+        aeroplanes: "1,067",
+        missiles: "1,000+",
+        nuclear: "None",
+        warships: "149"
+      },
+      "United Kingdom": {
+        army: "194,000 Active Personnel",
+        tanks: "227",
+        flag: "https://flagcdn.com/w80/gb.png",
+        guns: "1,500+",
+        aeroplanes: "733",
+        missiles: "500+",
+        nuclear: "225 warheads",
+        warships: "75"
+      },
+      "France": {
+        army: "205,000 Active Personnel",
+        tanks: "406",
+        flag: "https://flagcdn.com/w80/fr.png",
+        guns: "2,500+",
+        aeroplanes: "1,055",
+        missiles: "300+",
+        nuclear: "290 warheads",
+        warships: "180"
+      },
+      "Germany": {
+        army: "184,000 Active Personnel",
+        tanks: "266",
+        flag: "https://flagcdn.com/w80/de.png",
+        guns: "2,000+",
+        aeroplanes: "600+",
+        missiles: "200+",
+        nuclear: "0 (uses NATO sharing)",
+        warships: "80"
+      },
+      "Israel": {
+        army: "170,000 Active Personnel",
+        tanks: "2,200",
+        flag: "https://flagcdn.com/w80/il.png",
+        guns: "4,000+",
+        aeroplanes: "600+",
+        missiles: "1,000+",
+        nuclear: "90 warheads (estimated)",
+        warships: "65"
+      },
+      "Japan": {
+        army: "240,000 Active Personnel",
+        tanks: "1,000",
+        flag: "https://flagcdn.com/w80/jp.png",
+        guns: "2,000+",
+        aeroplanes: "700+",
+        missiles: "300+",
+        nuclear: "None",
+        warships: "150+"
+      },
+      "North Korea": {
+        army: "1,200,000 Active Personnel",
+        tanks: "6,000",
+        flag: "https://flagcdn.com/w80/kp.png",
+        guns: "20,000+",
+        aeroplanes: "950",
+        missiles: "1,000+",
+        nuclear: "30–40 warheads (estimated)",
+        warships: "700+"
+      },
+      "South Korea": {
+        army: "500,000 Active Personnel",
+        tanks: "2,600",
+        flag: "https://flagcdn.com/w80/kr.png",
+        guns: "8,000+",
+        aeroplanes: "1,500+",
+        missiles: "1,000+",
+        nuclear: "None (US shield)",
+        warships: "160+"
+      },
+      "Iran": {
+        army: "610,000 Active Personnel",
+        tanks: "1,634",
+        flag: "https://flagcdn.com/w80/ir.png",
+        guns: "8,000+",
+        aeroplanes: "500+",
+        missiles: "3,000+",
+        nuclear: "None (developing)",
+        warships: "90+"
+      },
+      "Brazil": {
+        army: "360,000 Active Personnel",
+        tanks: "437",
+        flag: "https://flagcdn.com/w80/br.png",
+        guns: "6,000+",
+        aeroplanes: "700+",
+        missiles: "None",
+        nuclear: "None",
+        warships: "112"
+      },
+      "Italy": {
+        army: "170,000 Active Personnel",
+        tanks: "200",
+        flag: "https://flagcdn.com/w80/it.png",
+        guns: "2,500+",
+        aeroplanes: "850+",
+        missiles: "200+",
+        nuclear: "None (NATO sharing)",
+        warships: "180+"
+      },
+      "Saudi Arabia": {
+        army: "227,000 Active Personnel",
+        tanks: "1,062",
+        flag: "https://flagcdn.com/w80/sa.png",
+        guns: "10,000+",
+        aeroplanes: "1,000+",
+        missiles: "500+",
+        nuclear: "None (rumored intentions)",
+        warships: "55"
+      },
+      "Egypt": {
+        army: "440,000 Active Personnel",
+        tanks: "4,295",
+        flag: "https://flagcdn.com/w80/eg.png",
+        guns: "12,000+",
+        aeroplanes: "1,100+",
+        missiles: "1,000+",
+        nuclear: "None",
+        warships: "320+"
+      },
+      "Australia": {
+        army: "60,000 Active Personnel",
+        tanks: "59",
+        flag: "https://flagcdn.com/w80/au.png",
+        guns: "1,500+",
+        aeroplanes: "250+",
+        missiles: "100+",
+        nuclear: "None",
+        warships: "48"
+      },
+      "Ukraine": {
+        army: "500,000+ Active Personnel",
+        tanks: "1,500+",
+        flag: "https://flagcdn.com/w80/ua.png",
+        guns: "10,000+",
+        aeroplanes: "300+",
+        missiles: "500+",
+        nuclear: "None",
+        warships: "12"
+      },
+      "Russia": {
+        army: "1,013,000 Active Personnel",
+        flag: "https://flagcdn.com/w80/ru.png",
+        tanks: "12,950",
+        guns: "70,000+",
+        aeroplanes: "3,500+",
+        missiles: "10,000+",
+        nuclear: "6,375 warheads",
+        warships: "300+"
+      },
+      "Canada": {
+        army: "68,000 Active Personnel",
+        flag: "https://flagcdn.com/w80/ca.png",
+        tanks: "82",
+        guns: "3,000+",
+        aeroplanes: "300+",
+        missiles: "200+",
+        nuclear: "None",
+        warships: "30"
+      },
+      "Mexico": {
+        army: "277,000 Active Personnel",
+        flag: "https://flagcdn.com/w80/mx.png",
+        tanks: "1,000",
+        guns: "5,000+",
+        aeroplanes: "200+",
+        missiles: "None",
+        nuclear: "None",
+        warships: "16"
+      },
+      "Indonesia": {
+        army: "400,000 Active Personnel",
+        flag: "https://flagcdn.com/w80/id.png",
+        tanks: "500",
+        guns: "8,000+",
+        aeroplanes: "200+",
+        missiles: "500+",
+        nuclear: "None",
+        warships: "100+"
+      },
+      "Argentina": {
+        army: "70,000 Active Personnel",
+        flag: "https://flagcdn.com/w80/ar.png",
+        tanks: "200",
+        guns: "2,000+",
+        aeroplanes: "200+",
+        missiles: "None",
+        nuclear: "None",
+        warships: "30"
+      },
+      "South Africa": {
+        army: "60,000 Active Personnel",
+        flag: "https://flagcdn.com/w80/za.png",
+        tanks: "200",
+        guns: "4,000+",
+        aeroplanes: "200+",
+        missiles: "None",
+        nuclear: "None",
+        warships: "8"
+      },
+      "Norway": {
+        army: "23,000 Active Personnel",
+        tanks: "36",
+        flag: "https://flagcdn.com/w80/no.png",
+        guns: "1,000+",
+        aeroplanes: "100+",
+        missiles: "100+",
+        nuclear: "None",
+        warships: "30"
+      },
+      "Sweden": {
+        army: "24,000 Active Personnel",
+        tanks: "120",
+        flag: "https://flagcdn.com/w80/se.png",
+        guns: "1,500+",
+        aeroplanes: "100+",
+        missiles: "200+",
+        nuclear: "None",
+        warships: "40"
+      },
+      "Vietnam": {
+        army: "482,000 Active Personnel",
+        tanks: "1,800+",
+        flag: "https://flagcdn.com/w80/vn.png",
+        guns: "7,000+",
+        aeroplanes: "300+",
+        missiles: "300+",
+        nuclear: "None",
+        warships: "80+"
+      },
+      "Spain": {
+        army: "120,000 Active Personnel",
+        tanks: "300",
+        flag: "https://flagcdn.com/w80/es.png",
+        guns: "1,500+",
+        aeroplanes: "300+",
+        missiles: "200+",
+        nuclear: "None (NATO sharing)",
+        warships: "60+"
+      },
+      "Poland": {
+        army: "198,000 Active Personnel",
+        tanks: "1,000+",
+        flag: "https://flagcdn.com/w80/pl.png",
+        guns: "2,500+",
+        aeroplanes: "300+",
+        missiles: "200+",
+        nuclear: "None (NATO sharing)",
+        warships: "40+"
+      },
+      "UAE": {
+        army: "65,000 Active Personnel",
+        tanks: "400",
+        flag: "https://flagcdn.com/w80/ae.png",
+        guns: "2,000+",
+        aeroplanes: "150+",
+        missiles: "100+",
+        nuclear: "None",
+        warships: "20+"
+      },
+      "Iraq": {
+        army: "200,000 Active Personnel",
+        tanks: "300+",
+        flag: "https://flagcdn.com/w80/iq.png",
+        guns: "5,000+",
+        aeroplanes: "150+",
+        missiles: "Limited",
+        nuclear: "None",
+        warships: "15"
+      },
+      "Nigeria": {
+        army: "135,000 Active Personnel",
+        tanks: "100+",
+        flag: "https://flagcdn.com/w80/ng.png",
+        guns: "2,000+",
+        aeroplanes: "100+",
+        missiles: "None",
+        nuclear: "None",
+        warships: "30"
+      },
+      "Thailand": {
+        army: "360,000 Active Personnel",
+        tanks: "800+",
+        flag: "https://flagcdn.com/w80/th.png",
+        guns: "6,000+",
+        aeroplanes: "300+",
+        missiles: "100+",
+        nuclear: "None",
+        warships: "70"
+      },
+      "Greece": {
+        army: "130,000 Active Personnel",
+        tanks: "1,300+",
+        flag: "https://flagcdn.com/w80/gr.png",
+        guns: "3,000+",
+        aeroplanes: "200+",
+        missiles: "100+",
+        nuclear: "None",
+        warships: "60"
+      },
+      "Bangladesh": {
+        army: "163,050 Active Personnel",
+        tanks: "320",
+        flag: "https://flagcdn.com/w80/bd.png",
+        guns: "2,000+",
+        aeroplanes: "58",
+        missiles: "Limited",
+        nuclear: "None",
+        warships: "9"
+      },
+      "Nepal": {
+        army: "96,000 Active Personnel",
+        tanks: "0",
+        flag: "https://flagcdn.com/w80/np.png",
+        guns: "500+",
+        aeroplanes: "12",
+        missiles: "None",
+        nuclear: "None",
+        warships: "0"
+      },
+      "Sri Lanka": {
+        army: "245,000 Active Personnel",
+        tanks: "300",
+        flag: "https://flagcdn.com/w80/lk.png",
+        guns: "1,000+",
+        aeroplanes: "50",
+        missiles: "None",
+        nuclear: "None",
+        warships: "25"
+      },
+      "Morocco": {
+        army: "200,000 Active Personnel",
+        tanks: "1,200",
+        flag: "https://flagcdn.com/w80/ma.png",
+        guns: "3,000+",
+        aeroplanes: "200+",
+        missiles: "Limited",
+        nuclear: "None",
+        warships: "121"
+      },
+      "Ethiopia": {
+        army: "503,000 Active Personnel",
+        tanks: "400+",
+        flag: "https://flagcdn.com/w80/et.png",
+        guns: "2,000+",
+        aeroplanes: "100+",
+        missiles: "None",
+        nuclear: "None",
+        warships: "10"
+      },
+      "Philippines": {
+        army: "125,000 Active Personnel",
+        tanks: "300+",
+        flag: "https://flagcdn.com/w80/ph.png",
+        guns: "2,000+",
+        aeroplanes: "100+",
+        missiles: "None",
+        nuclear: "None",
+        warships: "80"
+      },
+      "Malaysia": {
+        army: "110,000 Active Personnel",
+        tanks: "200+",
+        flag: "https://flagcdn.com/w80/my.png",
+        guns: "1,500+",
+        aeroplanes: "100+",
+        missiles: "Limited",
+        nuclear: "None",
+        warships: "55"
+      },
+      "Colombia": {
+        army: "295,000 Active Personnel",
+        tanks: "100+",
+        flag: "https://flagcdn.com/w80/co.png",
+        guns: "2,000+",
+        aeroplanes: "100+",
+        missiles: "None",
+        nuclear: "None",
+        warships: "60"
+      },
+
+
+    };
+
+
+
+  const searchInput = document.getElementById("searchInput");
+  const flagImg = document.getElementById("flagImg");
+  const autocompleteBox = document.getElementById("autocompleteBox");
+  const detailsBox = document.getElementById("countryDetails");
+  const countries = Object.keys(armyData);
+  let selectedCountry = null;
+
+  setTimeout(() => {
+    document.getElementById("mainApp").style.display = "block";
+  }, 5000);
+
+  function showFlag(country) {
+    const data = armyData[country];
+    if (data) {
+      flagImg.src = data.flag;
+      flagImg.style.display = "block";
+      detailsBox.style.display = "none";
+      selectedCountry = country;
+
+      if (countryColors[country]) {
+        document.body.style.background = countryColors[country];
+      }
+    }
+  }
+
+  function showDetails(country) {
+    const data = armyData[country];
+    if (data) {
+      detailsBox.innerHTML = `
+        <p><strong>Army:</strong> ${data.army}</p>
+        <p><strong>Tanks:</strong> ${data.tanks}</p>
+        <p><strong>Guns:</strong> ${data.guns}</p>
+        <p><strong>Aeroplanes:</strong> ${data.aeroplanes}</p>
+        <p><strong>Missiles:</strong> ${data.missiles}</p>
+        <p><strong>Nuclear:</strong> ${data.nuclear}</p>
+        <p><strong>Warships:</strong> ${data.warships}</p>
+      `;
+      detailsBox.style.display = "block";
+    }
+  }
+
+  searchInput.addEventListener("input", function () {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+
+    autocompleteBox.innerHTML = "";
+    flagImg.style.display = "none";
+    detailsBox.style.display = "none";
+
+    if (searchTerm === "") return;
+
+    const filteredCountries = countries.filter(country =>
+      country.toLowerCase().startsWith(searchTerm)
+    );
+
+    if (filteredCountries.length === 0) {
+      autocompleteBox.innerHTML = "<div style='padding: 5px;'>کوئی نتیجہ نہیں ملا</div>";
+    } else {
+      filteredCountries.forEach(country => {
+        const div = document.createElement("div");
+        div.textContent = country;
+        div.onclick = () => {
+          searchInput.value = country;
+          autocompleteBox.innerHTML = "";
+          showFlag(country);
+        };
+        autocompleteBox.appendChild(div);
+      });
+    }
+  });
+
+  flagImg.addEventListener("click", () => {
+    if (selectedCountry) {
+      showDetails(selectedCountry);
+
+    }
+  });
+
+
+
+
+  </script>
+
+</body>
+
+</html>
